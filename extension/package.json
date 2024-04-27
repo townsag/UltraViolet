@@ -1,0 +1,30 @@
+{
+  "name": "ultraviolet",
+  "version": "1.0.0",
+  "description": "Passive persuasive language detector",
+  "main": "popup.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/townsag/UltraViolet.git"
+  },
+  "keywords": [
+    "chrome",
+    "extension",
+    "extension",
+    "llm",
+    "persuasive",
+    "language",
+    "persuasive",
+    "ai",
+    "ml"
+  ],
+  "author": "townsag, ahmadgaz, chrehall68",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/townsag/UltraViolet/issues"
+  },
+  "homepage": "https://github.com/townsag/UltraViolet#readme"
+}
