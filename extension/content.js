@@ -39,6 +39,39 @@ function highlightNode(node) {
   node.parentNode.replaceChild(span, node);
 }
 
+function findParagraphs(start) {
+    // const treeWalker = document.createTreeWalker(start, NodeFilter.SHOW_ELEMENT);
+    let paragraphNodes = [];
+    let currentNode = start;
+    console.log(currentNode);
+    console.dir(currentNode);
+    // check to see if all the children of the current node are textNodes or 
+    // phrasing element nodes
+    let isParagraphNode = Array.from(currentNode.childNodes).every((node) => {
+        return (node.nodeType === Node.TEXT_NODE) || 
+                (node.nodeType === node.ELEMENT_NODE && isPhrasing(node));
+    });
+    console.log("got here");
+    // add caheck for meta style script etc tags
+    if (isParagraphNode) {
+        console.log("found paragraph node");
+        paragraphNodes.push(currentNode);
+    } else {
+        // using currentNode.children assumes that currentNode is an Element object
+        // (not a textContent object like a text or comment node) and only returns 
+        // child nodes that are HTML elements
+        // The assumption of this code is that all the text elements that we want to
+        // aggregate will also be children of an html element node and be without any
+        // sibbling nodes that are non-phrasing HTML element nodes
+        // this would break for something like <p>some text<p>some more text</p></p>
+        // would also break for something like <div>This is some text<p>this is some more text</p></div>
+        for(const node of Array.from(currentNode.children)){
+            findParagraphs(node);
+        }
+    }
+    return paragraphNodes;
+}
+
 function highlightTextNodes(rootNode) {
   const textNodes = getTextNodes(rootNode);
   textNodes.forEach((node) => highlightNode(node));
