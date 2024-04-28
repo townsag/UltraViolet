@@ -339,7 +339,6 @@ const rootNode = document.body;
 // );
 // const observer = new MutationObserver(observerCallback);
 
-<<<<<<< HEAD
 chrome.storage.local.get(["isSelected"]).then((result) => {
   console.log(result.isSelected);
   if (result.isSelected)
@@ -350,11 +349,3 @@ chrome.storage.local.get(["isSelected"]).then((result) => {
       }, 2000);
     };
 });
-=======
-window.onload = function () {
-  setTimeout(() => {
-    highlightTextNodes(rootNode);
-    // observer.observe(rootNode, observerConfig);
-  }, 2000);
-};
->>>>>>> 28fb523d315a5013a201c0dda3ab4e29e3d3e198
