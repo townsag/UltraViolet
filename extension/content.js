@@ -120,119 +120,120 @@ function getParagraphNodes(currentNode) {
   }
 }
 
+function makeSentanceGoups(paragraphNode) {
+  let sentanceGroups = [];
+  let sentanceBoundaryReg = /(?<=[.?!]+)/;
+  // buffer holds objects with attributes node and text
+  let buffer = [];
+  let paragraphNodeIterator = document.createNodeIterator(
+    paragraphNode,
+    NodeFilter.SHOW_TEXT,
+  );
+  let currentSubNode = paragraphNodeIterator.nextNode();
+  while (currentSubNode) {
+    let next_node = paragraphNodeIterator.nextNode();
+    // ToDo: gunna need to add some checks for empty textContent nodes here
+    // this is the case that the current sub node text does not contain any sentance delimeters
+    if (!sentanceBoundaryReg.test(currentSubNode.textContent)) {
+      buffer.push({ node: currentSubNode, text: currentSubNode.textContent });
+      // this is the case that the current sub node contains one or more sentance delimeters
+    } else {
+      let sentances = currentSubNode.textContent.split(sentanceBoundaryReg);
+      // create text nodes for each sentance in sentances
+      // replace current node with a dom fragment made of sentances
+      // group into sentacne groups
+      let newFragment = document.createDocumentFragment();
+      let firstSentanceNode = document.createTextNode(sentances[0]);
 
+      firstSentanceArray = buffer.map((pair) => pair.node);
+      firstSentanceArray.push(firstSentanceNode);
+      sentanceGroups.push(firstSentanceArray);
+      buffer = [];
+      newFragment.append(firstSentanceNode);
 
-function makeSentanceGoups(paragraphNode){
-    let sentanceGroups = [];
-    let sentanceBoundaryReg = /(?<=[.?!]+)/;
-    // buffer holds objects with attributes node and text
-    let buffer = []
-    let paragraphNodeIterator = document.createNodeIterator(paragraphNode, NodeFilter.SHOW_TEXT);
-    let currentSubNode = paragraphNodeIterator.nextNode();
-    while(currentSubNode){
-        let next_node = paragraphNodeIterator.nextNode();
-        // ToDo: gunna need to add some checks for empty textContent nodes here
-        // this is the case that the current sub node text does not contain any sentance delimeters
-        if (!sentanceBoundaryReg.test(currentSubNode.textContent)) {
-            buffer.push({node:currentSubNode, text:currentSubNode.textContent});
-        // this is the case that the current sub node contains one or more sentance delimeters
+      for (const sentance of sentances.slice(1, -1)) {
+        let middleSentanceNode = document.createTextNode(sentance);
+        newFragment.append(middleSentanceNode);
+        sentanceGroups.push([middleSentanceNode]);
+      }
+
+      if (sentances.length > 1) {
+        let lastSentance = sentances[sentances.length - 1];
+        let lastSentanceNode = document.createTextNode(lastSentance);
+        newFragment.append(lastSentanceNode);
+        if (sentanceBoundaryReg.test(lastSentance)) {
+          sentanceGroups.push([lastSentanceNode]);
         } else {
-            let sentances = currentSubNode.textContent.split(sentanceBoundaryReg);
-            // create text nodes for each sentance in sentances
-            // replace current node with a dom fragment made of sentances
-            // group into sentacne groups
-            let newFragment = document.createDocumentFragment();
-            let firstSentanceNode = document.createTextNode(sentances[0]);
-            
-            firstSentanceArray = buffer.map(pair => pair.node);
-            firstSentanceArray.push(firstSentanceNode);
-            sentanceGroups.push(firstSentanceArray);
-            buffer = [];
-            newFragment.append(firstSentanceNode);
-
-            for (const sentance of sentances.slice(1, -1)){
-                let middleSentanceNode = document.createTextNode(sentance);
-                newFragment.append(middleSentanceNode);
-                sentanceGroups.push([middleSentanceNode]);
-            }
-
-            if (sentances.length > 1) {
-                let lastSentance = sentances[sentances.length - 1];
-                let lastSentanceNode = document.createTextNode(lastSentance);
-                newFragment.append(lastSentanceNode);
-                if (sentanceBoundaryReg.test(lastSentance)) {
-                    sentanceGroups.push([lastSentanceNode]);
-                } else {
-                    buffer.push({node:lastSentanceNode, text:lastSentance});
-                }
-            }
-
-            currentSubNode.parentNode.replaceChild(newFragment, currentSubNode);
+          buffer.push({ node: lastSentanceNode, text: lastSentance });
         }
-        currentSubNode = next_node;
+      }
+
+      currentSubNode.parentNode.replaceChild(newFragment, currentSubNode);
     }
-    // group any remaining nodes in the buffer
-    if (buffer.length > 0) {
-        sentanceGroups.push(buffer.map(pair => pair.node));
-    }
-    return sentanceGroups;
+    currentSubNode = next_node;
+  }
+  // group any remaining nodes in the buffer
+  if (buffer.length > 0) {
+    sentanceGroups.push(buffer.map((pair) => pair.node));
+  }
+  return sentanceGroups;
 }
 
+function classifierFactory(
+  redList,
+  apiEndpoint = "https://ultraviolettext.tech/predictions",
+) {
+  return {
+    // return true if any of the redlist words are found
+    async classify(sentance) {
+      let containsRedlist = redList.some((word) => sentance.includes(word));
+      let prediction;
 
-function classifierFactory(redList, apiEndpoint="https://ultraviolettext.tech/predictions") {
-    return {
-        // return true if any of the redlist words are found
-        async classify(sentance) {
-            let containsRedlist =  redList.some((word) => sentance.includes(word));
-            let prediction;
-
-            try {
-                console.log("calling the fetch");
-                response = await fetch(apiEndpoint, {
-                    method:"POST",
-                    headers: {"Content-Type": "application/json",},
-                    body: JSON.stringify({"text":[sentance]})
-                });
-                console.log(response);
-                if (!response.ok) {
-                    throw new Error(`HTTP error ${response.status}`);
-                }
-                const data = await response.json();
-                console.log("printing data", data);
-                prediction = data[0];
-                console.log("this is prediction", prediction);
-            } catch (error) {
-                console.log("error: ", error);
-                prediction = false;
-            }
-            return containsRedlist || prediction;
+      try {
+        console.log("calling the fetch");
+        response = await fetch(apiEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: [sentance] }),
+        });
+        console.log(response);
+        if (!response.ok) {
+          throw new Error(`HTTP error ${response.status}`);
         }
-    }
+        const data = await response.json();
+        console.log("printing data", data);
+        prediction = data[0];
+        console.log("this is prediction", prediction);
+      } catch (error) {
+        console.log("error: ", error);
+        prediction = false;
+      }
+      return containsRedlist || prediction;
+    },
+  };
 }
-
 
 // classifier is an object returned by the classifier factory
 // sentance is an array of textContent Nodes
-function classifyAndHilight(classifier, sentanceArray){
-    // build the text sentance represented by the list of nodes
-    let sentance = sentanceArray.map(node => node.textContent).join("");
-    classifier.classify(sentance)
-    .then(result => {
-        if (result) {
-            console.log("this is sentanceArray inside the then", sentanceArray);
-            for(const node of sentanceArray) {
-                console.log("this is node", node);
-                highlightNode(node);
-            }
-        }
-    });
+function classifyAndHilight(classifier, sentanceArray) {
+  // build the text sentance represented by the list of nodes
+  let sentance = sentanceArray.map((node) => node.textContent).join("");
+  classifier.classify(sentance).then((result) => {
+    if (result) {
+      console.log("this is sentanceArray inside the then", sentanceArray);
+      for (const node of sentanceArray) {
+        console.log("this is node", node);
+        highlightNode(node);
+      }
+    }
+  });
 }
-
 
 function highlightNode(node) {
   const span = document.createElement("span");
   span.className = highlightClassname;
   span.textContent = node.nodeValue;
+  span.title = "Persuasive Language Suspected";
   node.parentNode.replaceChild(span, node);
 }
 
@@ -242,18 +243,17 @@ function highlightTextNodes(rootNode) {
   // paragraphs is an array of arrays of arrays :/
   // each element of paragraphs is a pragraph, or an array of arrays. Rows in the paragraph array
   // represent sentances and each element in the row is a textContent Node in that sentance
-  paragraphs = []
+  const paragraphs = [];
   for (const node of paragraphNodes) {
     paragraphs.push(makeSentanceGoups(node));
   }
 
   for (const paragraph of paragraphs) {
     for (const sentance of paragraph) {
-        classifyAndHilight(classifier, sentance);
+      classifyAndHilight(classifier, sentance);
     }
   }
 }
-
 
 function isHighlightElement(element) {
   return element.className === highlightClassname;
@@ -280,7 +280,6 @@ function getTextNodes(rootNode) {
   }
   return nodes;
 }
-
 
 // Mutation Observer
 
@@ -323,29 +322,52 @@ function debouncedCallback(callback, wait, limit, limitTimeWindow) {
 }
 
 const rootNode = document.body;
-// const observerConfig = { attributes: true, childList: true, subtree: true };
-// const observerCallback = debouncedCallback(
-//   () => highlightTextNodes(rootNode),
-//   // The function bellow highlights text within tagsToIgnore
-//   // without the context of what it's parents, grandparents,
-//   // etc. are, thus it's commented out.
-//   //(mutationList) => {
-//   //  for (let i = 0; i < mutationList.length; i++)
-//   //    highlightTextNodes(mutationList[i].target);
-//   //},
-//   50,
-//   90,
-//   5000,
-// );
-// const observer = new MutationObserver(observerCallback);
+const observerConfig = { attributes: true, childList: true, subtree: true };
+const observerCallback = debouncedCallback(
+  () => highlightTextNodes(rootNode),
+  // The function bellow highlights text within tagsToIgnore
+  // without the context of what it's parents, grandparents,
+  // etc. are, thus it's commented out.
+  //(mutationList) => {
+  //  for (let i = 0; i < mutationList.length; i++)
+  //    highlightTextNodes(mutationList[i].target);
+  //},
+  50,
+  90,
+  5000,
+);
+const observer = new MutationObserver(observerCallback);
+
+function getStyles(color) {
+  return ```
+.UV-HIGHLIGHT-TEXT {
+  border-radius: 0.25em;
+  cursor: pointer;
+  transition: background 200ms ease-in-out;
+  background-color: #${color}3f;
+  border: 1px dashed #${color}3f;
+}
+
+.UV-HIGHLIGHT-TEXT:hover {
+  background-color: #${color}7f;
+}
+```;
+}
 
 chrome.storage.local.get(["isSelected"]).then((result) => {
-  console.log(result.isSelected);
-  if (result.isSelected)
-    window.onload = function () {
-      setTimeout(() => {
-        highlightTextNodes(rootNode);
-        observer.observe(rootNode, observerConfig);
-      }, 2000);
-    };
+  if (result.isSelected) {
+    chrome.storage.local.get(["color"]).then((result) => {
+      window.onload = function () {
+        setTimeout(() => {
+          const styles = document.createElement(
+            "style",
+            getStyles(result.color ?? "CF80FF"),
+          );
+          document.head.appendChild(styles);
+          highlightTextNodes(rootNode);
+          observer.observe(rootNode, observerConfig);
+        }, 2000);
+      };
+    });
+  }
 });
