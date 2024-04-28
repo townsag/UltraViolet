@@ -12,13 +12,15 @@ forward_port: int = 5000
 
 class Status(Resource):
     def get(self):
-        return requests.get(f"http://localhost:{forward_port}/")
+        return requests.get(f"http://localhost:{forward_port}/").json()
 
     def post(self):
         try:
             value = request.get_json()
             if value:
-                return requests.post(f"http://localhost:{forward_port}", data=value)
+                return requests.post(
+                    f"http://localhost:{forward_port}", data=value
+                ).json()
 
             return {"error": "Invalid format."}
 
@@ -40,7 +42,9 @@ class GetPredictionOutput(Resource):
         try:
             data = request.get_json()
             if data:
-                return requests.post(f"http://localhost:{forward_port}", json=data)
+                return requests.post(
+                    f"http://localhost:{forward_port}/predict", json=data
+                ).json()
             return {"error": "Invalid format."}
 
         except Exception as error:
