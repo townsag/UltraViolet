@@ -83,6 +83,8 @@ const htmlPhrasingTags = [
   "a",
 ];
 
+const highlightClassname = "UV-HIGHLIGHT-TEXT";
+
 function isValidTextNode(node) {
   return (
     node.parentNode &&
@@ -239,7 +241,7 @@ function hilightMatchingSentances(classifier, paragraphNode) {
 // }
 
 function isHighlightElement(element) {
-  return element.className === "highlight";
+  return element.className === highlightClassname;
 }
 
 function getTextNodes(rootNode) {
@@ -266,7 +268,7 @@ function getTextNodes(rootNode) {
 
 function highlightNode(node) {
   const span = document.createElement("span");
-  span.className = "highlight";
+  span.className = highlightClassname;
   span.textContent = node.nodeValue;
   span.setAttribute("title", "UV Detected Persuasive Language");
   node.parentNode.replaceChild(span, node);

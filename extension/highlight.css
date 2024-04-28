@@ -1,10 +1,11 @@
-.highlight {
+.UV-HIGHLIGHT-TEXT {
   border-radius: 0.25em;
   cursor: pointer;
   transition: background 200ms ease-in-out;
   background-color: #cf80ff3f;
+  border: 1px dashed #cf80ff3f;
 }
 
-.highlight:hover {
+.UV-HIGHLIGHT-TEXT:hover {
   background-color: #cf80ff7f;
 }
