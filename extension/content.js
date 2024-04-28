@@ -83,6 +83,8 @@ const htmlPhrasingTags = [
   "a",
 ];
 
+const highlightClassname = "UV-HIGHLIGHT-TEXT";
+
 function isValidTextNode(node) {
   return (
     node.parentNode &&
@@ -117,6 +119,7 @@ function getParagraphNodes(currentNode) {
     return paragraphNodes;
   }
 }
+
 
 
 function makeSentanceGoups(paragraphNode){
@@ -245,13 +248,12 @@ function highlightTextNodes(rootNode) {
         classifyAndHilight(classifier, sentance);
     }
   }
-
 }
 
 
 function isHighlightElement(element) {
-    return element.className === "highlight";
-  }
+  return element.className === highlightClassname;
+}
 
 function getTextNodes(rootNode) {
   const nodeIterator = document.createNodeIterator(

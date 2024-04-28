@@ -1,6 +1,43 @@
-<html>
-  <body>
-    <h1>Hello Extensions</h1>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UV</title>
+    <link href="output.css" rel="stylesheet" />
+    <style>
+      #title-stroke {
+        -webkit-text-stroke: 4px #cf80ff3f;
+        paint-order: stroke fill;
+      }
+    </style>
+  </head>
+  <body
+    class="w-[250px] p-[32px] border-[#CF80FF3F] border-[4px] border-dashed"
+  >
+    <header class="flex flex-col pb-[16px] gap-[6px]">
+      <h1
+        id="title-stroke"
+        class="font-black text-center text-5xl tracking-tight"
+      >
+        uv
+      </h1>
+    </header>
+    <div class="flex flex-col gap-[8px]">
+      <div class="flex w-full justify-between">
+        <p class="font-medium text-sm">Light it up</p>
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="checkbox" value="" class="sr-only peer" />
+          <div
+            class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#CF80FF3f] rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#CF80FF]"
+          ></div>
+          <span
+            class="ms-3 text-sm sr-only font-medium text-gray-900 dark:text-gray-300"
+            >Toggle Theme</span
+          >
+        </label>
+      </div>
+    </div>
     <script src="popup.js"></script>
   </body>
 </html>

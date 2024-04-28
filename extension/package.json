@@ -26,5 +26,8 @@
   "bugs": {
     "url": "https://github.com/townsag/UltraViolet/issues"
   },
-  "homepage": "https://github.com/townsag/UltraViolet#readme"
+  "homepage": "https://github.com/townsag/UltraViolet#readme",
+  "devDependencies": {
+    "tailwindcss": "^3.4.3"
+  }
 }
