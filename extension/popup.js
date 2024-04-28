@@ -58,7 +58,7 @@ colorGreenRadio.addEventListener("change", (e) => {
 });
 const colorPurpleRadio = document.getElementById("color-purple");
 chrome.storage.local.get(["color"]).then((result) => {
-  if (result.color === "CF80FF" || results.color === "")
+  if (result.color === "CF80FF" || result.color === "")
     colorPurpleRadio.setAttribute("checked", "checked");
   else colorPurpleRadio.removeAttribute("checked");
 });
