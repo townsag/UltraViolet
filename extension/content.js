@@ -250,7 +250,7 @@ async function classifyAndHilightParagraph(classifier, paragraphArray) {
     });
   }
   const promises = paragraphArray.map(processSentanceArray);
-  const results = await Promise.all(promises);
+  await Promise.all(promises);
 }
 
 function highlightNode(node) {
@@ -325,7 +325,7 @@ function debouncedCallback(callback, wait, limit, limitTimeWindow) {
   let startTime = Date.now();
   return (...args) => {
     const now = Date.now();
-
+    console.log(now - startTime);
     // Reset count and if the time window has expired
     if (now - startTime > limitTimeWindow) {
       startTime = now;
@@ -351,7 +351,16 @@ function debouncedCallback(callback, wait, limit, limitTimeWindow) {
 const rootNode = document.body;
 const observerConfig = { attributes: true, childList: true, subtree: true };
 const observerCallback = debouncedCallback(
-  () => highlightTextNodes(rootNode),
+  () => {
+    chrome.storage.local.get(["blacklistWords"]).then((result) => {
+      highlightTextNodes(
+        rootNode,
+        result.blacklistWords
+          ? result.blacklistWords.split(",").map((word) => word.trim())
+          : [],
+      );
+    });
+  },
   // The function bellow highlights text within tagsToIgnore
   // without the context of what it's parents, grandparents,
   // etc. are, thus it's commented out.
@@ -359,10 +368,22 @@ const observerCallback = debouncedCallback(
   //  for (let i = 0; i < mutationList.length; i++)
   //    highlightTextNodes(mutationList[i].target);
   //},
-  50,
-  90,
+  1000,
+  4,
   5000,
 );
+
+setInterval(() => {
+  chrome.storage.local.get(["blacklistWords"]).then((result) => {
+    highlightTextNodes(
+      rootNode,
+      result.blacklistWords
+        ? result.blacklistWords.split(",").map((word) => word.trim())
+        : [],
+    );
+  });
+}, 10_000);
+
 const observer = new MutationObserver(observerCallback);
 
 function getStyles(color) {
@@ -401,7 +422,7 @@ window.onload = function () {
           );
         });
         console.log("highlited nodes once");
-        //observer.observe(rootNode, observerConfig);
+        observer.observe(rootNode, observerConfig);
       }, 2000);
     });
   });
