@@ -395,7 +395,9 @@ window.onload = function () {
         chrome.storage.local.get(["blacklistWords"]).then((result) => {
           highlightTextNodes(
             rootNode,
-            result.blacklistWords.split(",").map((word) => word.trim()),
+            result.blacklistWords
+              ? result.blacklistWords.split(",").map((word) => word.trim())
+              : [],
           );
         });
         console.log("highlited nodes once");
