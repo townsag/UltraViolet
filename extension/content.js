@@ -21,6 +21,7 @@ const tagsToIgnore = [
   "search",
   "select",
   "slot",
+  "style",
   "svg",
   "template",
   "textarea",
@@ -28,6 +29,7 @@ const tagsToIgnore = [
   "var",
   "video",
   "footer",
+  "table",
 ];
 
 const htmlPhrasingTags = [
@@ -108,7 +110,11 @@ function getParagraphNodes(currentNode) {
 
   if (isParagraphNode) {
     //console.log("isPara", currentNode);
-    return [currentNode];
+    if (currentNode.textContent.length >= 10) {
+        return [currentNode];
+    } else {
+        return [];
+    }
   } else {
     let children = Array.from(currentNode.children);
     let paragraphNodes = [];
@@ -229,6 +235,24 @@ function classifyAndHilight(classifier, sentanceArray) {
   });
 }
 
+
+async function classifyAndHilightParagraph(classifier, paragraphArray) {
+    async function processSentanceArray(sentanceArray){
+        let sentance = sentanceArray.map(node => node.textContent).join("");
+        classifier.classify(sentance).then(result => {
+            if (result) {
+                for (const node of sentanceArray) {
+                    highlightNode(node);
+                }
+            }
+        });
+    }
+    const promises = paragraphArray.map(processSentanceArray);
+    const results = await Promise.all(promises);
+
+}
+
+
 function highlightNode(node) {
   const span = document.createElement("span");
   span.className = highlightClassname;
@@ -238,21 +262,23 @@ function highlightNode(node) {
 }
 
 function highlightTextNodes(rootNode) {
+  console.log("inside hilight text nodes");
   const paragraphNodes = getParagraphNodes(rootNode);
   const classifier = classifierFactory(["addressed"]);
   // paragraphs is an array of arrays of arrays :/
   // each element of paragraphs is a pragraph, or an array of arrays. Rows in the paragraph array
   // represent sentances and each element in the row is a textContent Node in that sentance
-  const paragraphs = [];
+
+  console.log("about to build sentance groups");
+  const paragraphs = []
   for (const node of paragraphNodes) {
     paragraphs.push(makeSentanceGoups(node));
   }
-  console.log("past 3d array");
+  console.log("this is paragraphs");
+  console.log(paragraphs);
 
   for (const paragraph of paragraphs) {
-    for (const sentance of paragraph) {
-      classifyAndHilight(classifier, sentance);
-    }
+    classifyAndHilightParagraph(classifier, paragraph);
   }
 }
 
