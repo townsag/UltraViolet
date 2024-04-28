@@ -341,9 +341,13 @@ const observerCallback = debouncedCallback(
 );
 const observer = new MutationObserver(observerCallback);
 
-window.onload = function () {
-  setTimeout(() => {
-    highlightTextNodes(rootNode);
-    observer.observe(rootNode, observerConfig);
-  }, 2000);
-};
+chrome.storage.local.get(["isSelected"]).then((result) => {
+  console.log(result.isSelected);
+  if (result.isSelected)
+    window.onload = function () {
+      setTimeout(() => {
+        highlightTextNodes(rootNode);
+        observer.observe(rootNode, observerConfig);
+      }, 2000);
+    };
+});
