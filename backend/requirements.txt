@@ -3,4 +3,8 @@ torch
 flask
 flask-restful
 flask-cors
-waitress
+gevent
+torchserve
+torch-model-archiver
+torch-workflow-archiver
+intel-extension-for-pytorch
