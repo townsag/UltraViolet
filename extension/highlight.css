@@ -1,63 +1,10 @@
 .highlight {
   border-radius: 0.25em;
-  animation: 400ms ease-in-out forwards fadeIn;
-  -webkit-animation: 400ms ease-in-out forwards fadeIn;
-  -moz-animation: 400ms ease-in-out forwards fadeIn;
-  -o-animation: 400ms ease-in-out forwards fadeIn;
-  -ms-animation: 400ms ease-in-out forwards fadeIn;
+  cursor: pointer;
+  transition: background 200ms ease-in-out;
+  background-color: #cf80ff3f;
 }
 
-@keyframes fadeIn {
-  0% {
-    background: #cf80ff00;
-    border: 1px solid #cf80ff00;
-  }
-  100% {
-    background: #cf80ff3f;
-    border: 1px solid #cf80ff3f;
-  }
-}
-
-@-moz-keyframes fadeIn {
-  0% {
-    background: #cf80ff00;
-    border: 1px solid #cf80ff00;
-  }
-  100% {
-    background: #cf80ff3f;
-    border: 1px solid #cf80ff3f;
-  }
-}
-
-@-webkit-keyframes fadeIn {
-  0% {
-    background: #cf80ff00;
-    border: 1px solid #cf80ff00;
-  }
-  100% {
-    background: #cf80ff3f;
-    border: 1px solid #cf80ff3f;
-  }
-}
-
-@-o-keyframes fadeIn {
-  0% {
-    background: #cf80ff00;
-    border: 1px solid #cf80ff00;
-  }
-  100% {
-    background: #cf80ff3f;
-    border: 1px solid #cf80ff3f;
-  }
-}
-
-@-ms-keyframes fadeIn {
-  0% {
-    background: #cf80ff00;
-    border: 1px solid #cf80ff00;
-  }
-  100% {
-    background: #cf80ff3f;
-    border: 1px solid #cf80ff3f;
-  }
+.highlight:hover {
+  background-color: #cf80ff7f;
 }
