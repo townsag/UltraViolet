@@ -82,5 +82,7 @@ api.add_resource(Status, "/")
 api.add_resource(GetPredictionOutput, "/predict")
 
 if __name__ == "__main__":
+    from waitress import serve
+
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    serve(app, host="0.0.0.0", port=port)

@@ -1,0 +1,6 @@
+transformers
+torch
+flask
+flask-restful
+flask-cors
+waitress
