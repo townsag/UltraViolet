@@ -52,10 +52,10 @@ class TransformersClassifierHandler(BaseHandler, ABC):
         Schema:
         Data: [{"body": {"text":List[str]} }, ...]
         """
-        logger.info(f"Got {data}")
+        # logger.info(f"Got {data}")
         sentences = [item["body"]["text"] for item in data]
 
-        logger.info("Received text: '%s'", sentences)
+        # logger.info("Received text: '%s'", sentences)
 
         inputs = [
             self.tokenizer(
