@@ -1,5 +1,63 @@
 .highlight {
-  background: #cf80ff3f;
   border-radius: 0.25em;
-  border: 1px solid #cf80ff3f;
+  animation: 400ms ease-in-out forwards fadeIn;
+  -webkit-animation: 400ms ease-in-out forwards fadeIn;
+  -moz-animation: 400ms ease-in-out forwards fadeIn;
+  -o-animation: 400ms ease-in-out forwards fadeIn;
+  -ms-animation: 400ms ease-in-out forwards fadeIn;
+}
+
+@keyframes fadeIn {
+  0% {
+    background: #cf80ff00;
+    border: 1px solid #cf80ff00;
+  }
+  100% {
+    background: #cf80ff3f;
+    border: 1px solid #cf80ff3f;
+  }
+}
+
+@-moz-keyframes fadeIn {
+  0% {
+    background: #cf80ff00;
+    border: 1px solid #cf80ff00;
+  }
+  100% {
+    background: #cf80ff3f;
+    border: 1px solid #cf80ff3f;
+  }
+}
+
+@-webkit-keyframes fadeIn {
+  0% {
+    background: #cf80ff00;
+    border: 1px solid #cf80ff00;
+  }
+  100% {
+    background: #cf80ff3f;
+    border: 1px solid #cf80ff3f;
+  }
+}
+
+@-o-keyframes fadeIn {
+  0% {
+    background: #cf80ff00;
+    border: 1px solid #cf80ff00;
+  }
+  100% {
+    background: #cf80ff3f;
+    border: 1px solid #cf80ff3f;
+  }
+}
+
+@-ms-keyframes fadeIn {
+  0% {
+    background: #cf80ff00;
+    border: 1px solid #cf80ff00;
+  }
+  100% {
+    background: #cf80ff3f;
+    border: 1px solid #cf80ff3f;
+  }
 }

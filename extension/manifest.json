@@ -3,6 +3,7 @@
   "name": "UltraViolet",
   "description": "Passive persuasive language detector",
   "version": "1.0",
+  "web_accessible_resources": [{ "resources": ["output.css"], "matches": [] }],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
