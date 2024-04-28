@@ -79,6 +79,7 @@ const htmlPhrasingTags = [
   "var",
   "video",
   "wbr",
+  "a",
 ];
 
 function isValidTextNode(node) {
@@ -210,13 +211,15 @@ const observerCallback = debouncedCallback(
   //  for (let i = 0; i < mutationList.length; i++)
   //    highlightTextNodes(mutationList[i].target);
   //},
-  100,
-  10,
+  50,
+  90,
   5000,
 );
 const observer = new MutationObserver(observerCallback);
 
 window.onload = function () {
-  highlightTextNodes(rootNode);
-  observer.observe(rootNode, observerConfig);
+  setTimeout(() => {
+    highlightTextNodes(rootNode);
+    observer.observe(rootNode, observerConfig);
+  }, 2000);
 };
