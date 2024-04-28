@@ -127,22 +127,25 @@ function highlightNode(node) {
 }
 
 function getParagraphNodes(currentNode) {
-  let isParagraphNode =
-    Array.from(currentNode.childNodes).every((node) => {
-      return (
-        node.nodeType === Node.TEXT_NODE ||
-        (node.nodeType === node.ELEMENT_NODE && isPhrasingNode(node))
-      );
-    }) && !tagsToIgnore.includes(currentNode.tagName.toLowerCase());
+  if (tagsToIgnore.includes(currentNode.tagName.toLowerCase())) return [];
+  let isParagraphNode = Array.from(currentNode.childNodes).every((node) => {
+    return (
+      node.nodeType === Node.TEXT_NODE ||
+      (node.nodeType === Node.ELEMENT_NODE && isPhrasingNode(node))
+    );
+  });
 
   if (isParagraphNode) {
+    console.log("isPara", currentNode);
     return [currentNode];
   } else {
-    let nodes = [];
-    for (const node of Array.from(currentNode.children)) {
-      nodes.push(...getParagraphNodes(node));
+    console.log("isNot", Array.from(currentNode.children));
+    let children = Array.from(currentNode.children);
+    let paragraphNodes = [];
+    for (let i = 0; i < children.length; i++) {
+      paragraphNodes.push(...getParagraphNodes(children[i]));
     }
-    return nodes;
+    return paragraphNodes;
   }
 }
 
@@ -150,7 +153,9 @@ function highlightTextNodes(rootNode) {
   const paragraphNodes = getParagraphNodes(rootNode);
   for (let i = 0; i < paragraphNodes.length; i++) {
     const textNodes = getTextNodes(paragraphNodes[i]);
-    textNodes.forEach((node) => highlightNode(node));
+    for (let j = 0; j < textNodes.length; j++) {
+      highlightNode(textNodes[j]);
+    }
   }
 }
 
@@ -184,6 +189,7 @@ function debouncedCallback(callback, wait, limit, limitTimeWindow) {
       return;
     }
 
+    console.log(callCount);
     callCount++;
 
     clearTimeout(timerId);
@@ -196,14 +202,15 @@ function debouncedCallback(callback, wait, limit, limitTimeWindow) {
 const rootNode = document.body;
 const observerConfig = { attributes: true, childList: true, subtree: true };
 const observerCallback = debouncedCallback(
-  (mutationList) => {
-    for (const mutation of mutationList) {
-      highlightTextNodes(mutation.target);
-    }
-  },
-  50,
+  () => highlightTextNodes(rootNode),
+  //(mutationList) => {
+  //  for (let i = 0; i < mutationList.length; i++)
+  //    highlightTextNodes(mutationList[i].target);
+  //},
   100,
+  10,
   5000,
 );
 const observer = new MutationObserver(observerCallback);
+highlightTextNodes(rootNode);
 observer.observe(rootNode, observerConfig);
