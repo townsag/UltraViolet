@@ -111,9 +111,9 @@ function getParagraphNodes(currentNode) {
   if (isParagraphNode) {
     //console.log("isPara", currentNode);
     if (currentNode.textContent.length >= 10) {
-        return [currentNode];
+      return [currentNode];
     } else {
-        return [];
+      return [];
     }
   } else {
     let children = Array.from(currentNode.children);
@@ -192,7 +192,10 @@ function classifierFactory(
   return {
     // return true if any of the redlist words are found
     async classify(sentance) {
-      let containsRedlist = redList.some((word) => sentance.includes(word));
+      let containsRedlist = redList.some((word) => {
+        const pattern = new RegExp("\\b" + word + "\\b", "i");
+        return pattern.test(sentance);
+      });
       let prediction;
 
       try {
@@ -235,23 +238,20 @@ function classifyAndHilight(classifier, sentanceArray) {
   });
 }
 
-
 async function classifyAndHilightParagraph(classifier, paragraphArray) {
-    async function processSentanceArray(sentanceArray){
-        let sentance = sentanceArray.map(node => node.textContent).join("");
-        classifier.classify(sentance).then(result => {
-            if (result) {
-                for (const node of sentanceArray) {
-                    highlightNode(node);
-                }
-            }
-        });
-    }
-    const promises = paragraphArray.map(processSentanceArray);
-    const results = await Promise.all(promises);
-
+  async function processSentanceArray(sentanceArray) {
+    let sentance = sentanceArray.map((node) => node.textContent).join("");
+    classifier.classify(sentance).then((result) => {
+      if (result) {
+        for (const node of sentanceArray) {
+          highlightNode(node);
+        }
+      }
+    });
+  }
+  const promises = paragraphArray.map(processSentanceArray);
+  const results = await Promise.all(promises);
 }
-
 
 function highlightNode(node) {
   const span = document.createElement("span");
@@ -261,16 +261,16 @@ function highlightNode(node) {
   node.parentNode.replaceChild(span, node);
 }
 
-function highlightTextNodes(rootNode) {
+function highlightTextNodes(rootNode, blacklistWords) {
   console.log("inside hilight text nodes");
   const paragraphNodes = getParagraphNodes(rootNode);
-  const classifier = classifierFactory(["addressed"]);
+  const classifier = classifierFactory(blacklistWords);
   // paragraphs is an array of arrays of arrays :/
   // each element of paragraphs is a pragraph, or an array of arrays. Rows in the paragraph array
   // represent sentances and each element in the row is a textContent Node in that sentance
 
   console.log("about to build sentance groups");
-  const paragraphs = []
+  const paragraphs = [];
   for (const node of paragraphNodes) {
     paragraphs.push(makeSentanceGoups(node));
   }
@@ -392,7 +392,12 @@ window.onload = function () {
         const styles = document.createElement("style");
         styles.textContent = getStyles(result.color ?? "CF80FF");
         document.head.appendChild(styles);
-        highlightTextNodes(rootNode);
+        chrome.storage.local.get(["blacklistWords"]).then((result) => {
+          highlightTextNodes(
+            rootNode,
+            result.blacklistWords.split(",").map((word) => word.trim()),
+          );
+        });
         console.log("highlited nodes once");
         //observer.observe(rootNode, observerConfig);
       }, 2000);
