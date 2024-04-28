@@ -197,8 +197,10 @@ function classifierFactory(redList, apiEndpoint="https://ultraviolettext.tech/pr
                 if (!response.ok) {
                     throw new Error(`HTTP error ${response.status}`);
                 }
-                const data = response.json();
-                prediction = data.label;
+                const data = await response.json();
+                console.log("printing data", data);
+                prediction = data[0];
+                console.log("this is prediction", prediction);
             } catch (error) {
                 console.log("error: ", error);
                 prediction = false;
@@ -217,7 +219,9 @@ function classifyAndHilight(classifier, sentanceArray){
     classifier.classify(sentance)
     .then(result => {
         if (result) {
-            for(const node in sentanceArray) {
+            console.log("this is sentanceArray inside the then", sentanceArray);
+            for(const node of sentanceArray) {
+                console.log("this is node", node);
                 highlightNode(node);
             }
         }
@@ -227,7 +231,7 @@ function classifyAndHilight(classifier, sentanceArray){
 
 function highlightNode(node) {
   const span = document.createElement("span");
-  span.className = "highlight";
+  span.className = highlightClassname;
   span.textContent = node.nodeValue;
   node.parentNode.replaceChild(span, node);
 }
