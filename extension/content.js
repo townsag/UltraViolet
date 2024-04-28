@@ -140,17 +140,16 @@ function getParagraphNodes(currentNode) {
   } else {
     let nodes = [];
     for (const node of Array.from(currentNode.children)) {
-      nodes = [...nodes, ...getParagraphNodes(node)];
+      nodes.push(...getParagraphNodes(node));
     }
-    console.log(nodes);
     return nodes;
   }
 }
 
 function highlightTextNodes(rootNode) {
   const paragraphNodes = getParagraphNodes(rootNode);
-  for (const node of paragraphNodes) {
-    const textNodes = getTextNodes(node);
+  for (let i = 0; i < paragraphNodes.length; i++) {
+    const textNodes = getTextNodes(paragraphNodes[i]);
     textNodes.forEach((node) => highlightNode(node));
   }
 }
