@@ -110,6 +110,7 @@ function getParagraphNodes(currentNode) {
 
   if (isParagraphNode) {
     //console.log("isPara", currentNode);
+    // paragraph level filtering
     if (currentNode.textContent.length >= 10) {
       return [currentNode];
     } else {
@@ -139,6 +140,11 @@ function makeSentanceGoups(paragraphNode) {
   while (currentSubNode) {
     let next_node = paragraphNodeIterator.nextNode();
     // ToDo: gunna need to add some checks for empty textContent nodes here
+    // node level filtering
+    if (isHighlightElement(currentSubNode.parentNode) || currentSubNode.textContent.length <= 0) {
+        currentSubNode = next_node;
+        continue;
+    }
     // this is the case that the current sub node text does not contain any sentance delimeters
     if (!sentanceBoundaryReg.test(currentSubNode.textContent)) {
       buffer.push({ node: currentSubNode, text: currentSubNode.textContent });
@@ -205,14 +211,14 @@ function classifierFactory(
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ text: [sentance] }),
         });
-        console.log(response);
+        // console.log(response);
         if (!response.ok) {
           throw new Error(`HTTP error ${response.status}`);
         }
         const data = await response.json();
-        console.log("printing data", data);
+        // console.log("printing data", data);
         prediction = data[0];
-        console.log("this is prediction", prediction);
+        // console.log("this is prediction", prediction);
       } catch (error) {
         console.log("error: ", error);
         prediction = false;
@@ -224,19 +230,19 @@ function classifierFactory(
 
 // classifier is an object returned by the classifier factory
 // sentance is an array of textContent Nodes
-function classifyAndHilight(classifier, sentanceArray) {
-  // build the text sentance represented by the list of nodes
-  let sentance = sentanceArray.map((node) => node.textContent).join("");
-  classifier.classify(sentance).then((result) => {
-    if (result) {
-      console.log("this is sentanceArray inside the then", sentanceArray);
-      for (const node of sentanceArray) {
-        console.log("this is node", node);
-        highlightNode(node);
-      }
-    }
-  });
-}
+// function classifyAndHilight(classifier, sentanceArray) {
+//   // build the text sentance represented by the list of nodes
+//   let sentance = sentanceArray.map((node) => node.textContent).join("");
+//   classifier.classify(sentance).then((result) => {
+//     if (result) {
+//     //   console.log("this is sentanceArray inside the then", sentanceArray);
+//       for (const node of sentanceArray) {
+//         // console.log("this is node", node);
+//         highlightNode(node);
+//       }
+//     }
+//   });
+// }
 
 async function classifyAndHilightParagraph(classifier, paragraphArray) {
   async function processSentanceArray(sentanceArray) {
@@ -275,7 +281,7 @@ function highlightTextNodes(rootNode, blacklistWords) {
     paragraphs.push(makeSentanceGoups(node));
   }
   console.log("this is paragraphs");
-  console.log(paragraphs);
+//   console.log(paragraphs);
 
   for (const paragraph of paragraphs) {
     classifyAndHilightParagraph(classifier, paragraph);
@@ -286,27 +292,6 @@ function isHighlightElement(element) {
   return element.className === highlightClassname;
 }
 
-function getTextNodes(rootNode) {
-  const nodeIterator = document.createNodeIterator(
-    rootNode,
-    NodeFilter.SHOW_TEXT,
-    { acceptNode: () => NodeFilter.FILTER_ACCEPT },
-  );
-  const nodes = [];
-  let currentNode;
-  while ((currentNode = nodeIterator.nextNode())) {
-    if (!isValidTextNode(currentNode)) continue;
-    const text = currentNode.nodeValue;
-    if (
-      // ADD MORE CONDITIONS
-      text.trim().length <= 0 ||
-      isHighlightElement(currentNode.parentElement)
-    )
-      continue;
-    nodes.push(currentNode);
-  }
-  return nodes;
-}
 
 // Mutation Observer
 
@@ -368,21 +353,21 @@ const observerCallback = debouncedCallback(
   //  for (let i = 0; i < mutationList.length; i++)
   //    highlightTextNodes(mutationList[i].target);
   //},
-  1000,
-  4,
+  100,
+  40,
   5000,
 );
 
-setInterval(() => {
-  chrome.storage.local.get(["blacklistWords"]).then((result) => {
-    highlightTextNodes(
-      rootNode,
-      result.blacklistWords
-        ? result.blacklistWords.split(",").map((word) => word.trim())
-        : [],
-    );
-  });
-}, 10_000);
+// setInterval(() => {
+//   chrome.storage.local.get(["blacklistWords"]).then((result) => {
+//     highlightTextNodes(
+//       rootNode,
+//       result.blacklistWords
+//         ? result.blacklistWords.split(",").map((word) => word.trim())
+//         : [],
+//     );
+//   });
+// }, 10_000);
 
 const observer = new MutationObserver(observerCallback);
 
@@ -422,7 +407,7 @@ window.onload = function () {
           );
         });
         console.log("highlited nodes once");
-        observer.observe(rootNode, observerConfig);
+        //observer.observe(rootNode, observerConfig);
       }, 2000);
     });
   });
