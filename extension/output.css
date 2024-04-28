@@ -1834,6 +1834,11 @@ video {
   border-bottom-width: 1px;
 }
 
+.border-x-\[0px\] {
+  border-left-width: 0px;
+  border-right-width: 0px;
+}
+
 .border-b {
   border-bottom-width: 1px;
 }
@@ -1899,6 +1904,26 @@ video {
   border-color: rgb(209 213 219 / var(--tw-border-opacity));
 }
 
+.border-\[\#BED0621F\] {
+  border-color: #BED0621F;
+}
+
+.border-\[\#FCD26B1F\] {
+  border-color: #FCD26B1F;
+}
+
+.border-\[\#CF80FF1F\] {
+  border-color: #CF80FF1F;
+}
+
+.border-\[\#74CABE1F\] {
+  border-color: #74CABE1F;
+}
+
+.border-\[\#E174591F\] {
+  border-color: #E174591F;
+}
+
 .bg-\[rgb\(255\2c 0\2c 0\)\] {
   --tw-bg-opacity: 1;
   background-color: rgb(255 0 0 / var(--tw-bg-opacity));
@@ -1922,6 +1947,26 @@ video {
 .bg-gray-50 {
   --tw-bg-opacity: 1;
   background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+}
+
+.bg-\[\#BED0621F\] {
+  background-color: #BED0621F;
+}
+
+.bg-\[\#FCD26B1F\] {
+  background-color: #FCD26B1F;
+}
+
+.bg-\[\#CF80FF1F\] {
+  background-color: #CF80FF1F;
+}
+
+.bg-\[\#74CABE1F\] {
+  background-color: #74CABE1F;
+}
+
+.bg-\[\#E174591F\] {
+  background-color: #E174591F;
 }
 
 .decoration-slice {
@@ -2064,6 +2109,11 @@ video {
   padding-bottom: 0.5rem;
 }
 
+.py-\[16px\] {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
 .pb-\[16px\] {
   padding-bottom: 16px;
 }
@@ -2082,6 +2132,22 @@ video {
 
 .pb-\[12px\] {
   padding-bottom: 12px;
+}
+
+.pt-\[16px\] {
+  padding-top: 16px;
+}
+
+.pt-\[12px\] {
+  padding-top: 12px;
+}
+
+.pt-\[8px\] {
+  padding-top: 8px;
+}
+
+.pb-\[20px\] {
+  padding-bottom: 20px;
 }
 
 .text-left {
@@ -2326,6 +2392,10 @@ video {
 .text-gray-100 {
   --tw-text-opacity: 1;
   color: rgb(243 244 246 / var(--tw-text-opacity));
+}
+
+.text-\[\#CF80FF9F\] {
+  color: #CF80FF9F;
 }
 
 .underline {
@@ -2824,13 +2894,51 @@ video {
   content: var(--tw-content);
 }
 
+.hover\:border-\[\#BED0621F\]:hover {
+  border-color: #BED0621F;
+}
+
+.hover\:border-gray-200:hover {
+  --tw-border-opacity: 1;
+  border-color: rgb(229 231 235 / var(--tw-border-opacity));
+}
+
 .hover\:bg-gray-50:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(249 250 251 / var(--tw-bg-opacity));
 }
 
+.hover\:bg-\[\#BED0621F\]:hover {
+  background-color: #BED0621F;
+}
+
 .hover\:font-bold:hover {
   font-weight: 700;
+}
+
+.hover\:text-\[\#CF80FF9F\]:hover {
+  color: #CF80FF9F;
+}
+
+.hover\:shadow-\[0_0_4px_\#CF80FF\]:hover {
+  --tw-shadow: 0 0 4px #CF80FF;
+  --tw-shadow-colored: 0 0 4px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.hover\:drop-shadow-\[0_0_4px_\#CF80FF\]:hover {
+  --tw-drop-shadow: drop-shadow(0 0 4px #CF80FF);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+
+.hover\:drop-shadow-\[0_0_8px_\#CF80FF3F\]:hover {
+  --tw-drop-shadow: drop-shadow(0 0 8px #CF80FF3F);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+
+.hover\:drop-shadow-\[0_0_8px_\#CF80FF9F\]:hover {
+  --tw-drop-shadow: drop-shadow(0 0 8px #CF80FF9F);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
 .before\:hover\:text-center:hover::before {
@@ -2873,6 +2981,22 @@ video {
   border-color: #CF80FF3F;
 }
 
+.peer:checked ~ .peer-checked\:border-\[\#74CABE3F\] {
+  border-color: #74CABE3F;
+}
+
+.peer:checked ~ .peer-checked\:border-\[\#BED0623F\] {
+  border-color: #BED0623F;
+}
+
+.peer:checked ~ .peer-checked\:border-\[\#FCD26B3F\] {
+  border-color: #FCD26B3F;
+}
+
+.peer:checked ~ .peer-checked\:border-\[\#E174593F\] {
+  border-color: #E174593F;
+}
+
 .peer:checked ~ .peer-checked\:bg-blue-600 {
   --tw-bg-opacity: 1;
   background-color: rgb(37 99 235 / var(--tw-bg-opacity));
@@ -2890,6 +3014,22 @@ video {
 
 .peer:checked ~ .peer-checked\:bg-\[\#CF80FF3F\] {
   background-color: #CF80FF3F;
+}
+
+.peer:checked ~ .peer-checked\:bg-\[\#74CABE3F\] {
+  background-color: #74CABE3F;
+}
+
+.peer:checked ~ .peer-checked\:bg-\[\#BED0623F\] {
+  background-color: #BED0623F;
+}
+
+.peer:checked ~ .peer-checked\:bg-\[\#FCD26B3F\] {
+  background-color: #FCD26B3F;
+}
+
+.peer:checked ~ .peer-checked\:bg-\[\#E174593F\] {
+  background-color: #E174593F;
 }
 
 .peer:checked ~ .peer-checked\:after\:translate-x-full::after {
