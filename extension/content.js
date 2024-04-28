@@ -247,6 +247,7 @@ function highlightTextNodes(rootNode) {
   for (const node of paragraphNodes) {
     paragraphs.push(makeSentanceGoups(node));
   }
+  console.log("past 3d array");
 
   for (const paragraph of paragraphs) {
     for (const sentance of paragraph) {
@@ -339,7 +340,7 @@ const observerCallback = debouncedCallback(
 const observer = new MutationObserver(observerCallback);
 
 function getStyles(color) {
-  return ```
+  return `
 .UV-HIGHLIGHT-TEXT {
   border-radius: 0.25em;
   cursor: pointer;
@@ -351,23 +352,24 @@ function getStyles(color) {
 .UV-HIGHLIGHT-TEXT:hover {
   background-color: #${color}7f;
 }
-```;
+`;
 }
 
-chrome.storage.local.get(["isSelected"]).then((result) => {
-  if (result.isSelected) {
+window.onload = function () {
+  chrome.storage.local.get(["isSelected"]).then((result) => {
+    console.log(result.isSelected);
+    if (result.isSelected === false) return;
     chrome.storage.local.get(["color"]).then((result) => {
-      window.onload = function () {
-        setTimeout(() => {
-          const styles = document.createElement(
-            "style",
-            getStyles(result.color ?? "CF80FF"),
-          );
-          document.head.appendChild(styles);
-          highlightTextNodes(rootNode);
-          observer.observe(rootNode, observerConfig);
-        }, 2000);
-      };
+      console.log(result.color);
+      setTimeout(() => {
+        console.log("in here");
+        const styles = document.createElement("style");
+        styles.textContent = getStyles(result.color ?? "CF80FF");
+        document.head.appendChild(styles);
+        highlightTextNodes(rootNode);
+        console.log("highlited nodes once");
+        //observer.observe(rootNode, observerConfig);
+      }, 2000);
     });
-  }
-});
+  });
+};
