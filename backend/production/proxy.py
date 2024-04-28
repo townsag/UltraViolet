@@ -94,7 +94,7 @@ class GetPredictionOutput(Resource):
                 # if we need to send new requests, do so
                 if len(outgoing_req["text"]) != 0:
                     server_responses: List[bool] = requests.post(
-                        f"http://localhost:{forward_port}/predictions/bert",
+                        f"http://localhost:{forward_port}/predictions/roberta",
                         json=outgoing_req,
                     ).json()
 
