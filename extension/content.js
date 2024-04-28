@@ -136,12 +136,12 @@ function getParagraphNodes(currentNode) {
   });
 
   if (isParagraphNode) {
-    console.log("isPara", currentNode);
+    //console.log("isPara", currentNode);
     return [currentNode];
   } else {
-    console.log("isNot", Array.from(currentNode.children));
     let children = Array.from(currentNode.children);
     let paragraphNodes = [];
+    //console.log("NotPara", children);
     for (let i = 0; i < children.length; i++) {
       paragraphNodes.push(...getParagraphNodes(children[i]));
     }
@@ -203,6 +203,9 @@ const rootNode = document.body;
 const observerConfig = { attributes: true, childList: true, subtree: true };
 const observerCallback = debouncedCallback(
   () => highlightTextNodes(rootNode),
+  // The function bellow highlights text within tagsToIgnore
+  // without the context of what it's parents, grandparents,
+  // etc. are, thus it's commented out.
   //(mutationList) => {
   //  for (let i = 0; i < mutationList.length; i++)
   //    highlightTextNodes(mutationList[i].target);
@@ -212,5 +215,8 @@ const observerCallback = debouncedCallback(
   5000,
 );
 const observer = new MutationObserver(observerCallback);
-highlightTextNodes(rootNode);
-observer.observe(rootNode, observerConfig);
+
+window.onload = function () {
+  highlightTextNodes(rootNode);
+  observer.observe(rootNode, observerConfig);
+};
